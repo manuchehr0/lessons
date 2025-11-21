@@ -113,7 +113,7 @@ func createTables(db *sql.DB) error {
 
 ---
 
-## 4. Create (Вставка данных)
+## 4. Insert (Вставка данных)
 
 ### Простая вставка:
 ```go
