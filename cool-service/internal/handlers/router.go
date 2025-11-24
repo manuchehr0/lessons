@@ -10,16 +10,14 @@ import (
 )
 
 type Handler struct {
-	Port    string
 	Service *service.NoteService
 }
 
-func NewHandler(port string, s *service.NoteService) *Handler {
-	return &Handler{Port: port, Service: s}
+func NewHandler(s *service.NoteService) *Handler {
+	return &Handler{Service: s}
 }
 
-
-func (h *Handler) InitRoutes() {
+func (h *Handler) InitRoutes() *mux.Router {
 	r := mux.NewRouter()
 	api1 := r.PathPrefix("/api/v1").Subrouter()
 
@@ -33,53 +31,6 @@ func (h *Handler) InitRoutes() {
 		Methods(http.MethodPut)
 	notes.Path("/create").HandlerFunc(h.CreateNote).
 		Methods(http.MethodPost)
-
-	if err := http.ListenAndServe(h.Port, r); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func (h *Handler) GetNotes(w http.ResponseWriter, r *http.Request) {
-	notes := map[string]string{
-		"note": "some text",
-	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(notes)
-}
-func (h *Handler) CreateNote(w http.ResponseWriter, r *http.Request) {
-	note := models.Note{}
-
-	err := json.NewDecoder(r.Body).Decode(&note)
-	if err != nil {
-
-	}
-	log.Println("new note:", note)
-
-	note.Id = 123
-	now := time.Now()
-	note.CreatedAt = time.Now()
-	note.UpdatedAt = &now
-	w.WriteHeader(201)
-	json.NewEncoder(w).Encode(note)
-}
-func (h *Handler) UpdateNote(w http.ResponseWriter, r *http.Request) {
-	notes := map[string]string{
-		"note": "some text",
-	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(notes)
-}
-func (h *Handler) DeleteNote(w http.ResponseWriter, r *http.Request) {
-	notes := map[string]string{
-		"note": "some text",
-	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(notes)
-}
-func (h *Handler) GetNoteById(w http.ResponseWriter, r *http.Request) {
-	notes := map[string]string{
-		"note": "some text",
-	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(notes)
+		
+	return r
 }
