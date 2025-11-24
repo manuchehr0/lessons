@@ -10,12 +10,14 @@ import (
 )
 
 type Handler struct {
-	Port string
+	Port    string
+	Service *service.NoteService
 }
 
-func NewHandler(port string) *Handler {
-	return &Handler{Port: port}
+func NewHandler(port string, s *service.NoteService) *Handler {
+	return &Handler{Port: port, Service: s}
 }
+
 
 func (h *Handler) InitRoutes() {
 	r := mux.NewRouter()
